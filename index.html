@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Januária Conecta</title>
+
+<style>
+
+body{
+font-family: Arial;
+background:#f4f6f8;
+margin:0;
+}
+
+header{
+background:#2c7be5;
+color:white;
+text-align:center;
+padding:20px;
+}
+
+.container{
+padding:20px;
+max-width:900px;
+margin:auto;
+}
+
+.card{
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 3px 8px rgba(0,0,0,0.1);
+margin-bottom:20px;
+}
+
+label{
+font-weight:bold;
+}
+
+select,input,textarea{
+width:100%;
+padding:10px;
+margin-top:5px;
+margin-bottom:15px;
+border-radius:6px;
+border:1px solid #ccc;
+}
+
+button{
+background:#2c7be5;
+color:white;
+border:none;
+padding:12px;
+border-radius:6px;
+cursor:pointer;
+font-size:16px;
+}
+
+button:hover{
+background:#1b5dc9;
+}
+
+.problema{
+border-left:6px solid #2c7be5;
+padding:10px;
+margin-top:10px;
+background:#f8f9fa;
+}
+
+.status{
+font-size:14px;
+color:#555;
+}
+
+img{
+max-width:100%;
+border-radius:8px;
+margin-top:10px;
+}
+
+footer{
+text-align:center;
+padding:15px;
+background:#eee;
+margin-top:30px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+<h1>Januária Conecta</h1>
+<p>Ajude a melhorar a cidade informando problemas urbanos</p>
+</header>
+
+<div class="container">
+
+<div class="card">
+
+<h2>Registrar Problema</h2>
+
+<label>Tipo de problema</label>
+<select id="tipo">
+<option>Buraco na rua</option>
+<option>Lixo acumulado</option>
+<option>Lâmpada de poste queimada</option>
+<option>Foco de dengue</option>
+<option>Vazamento de água</option>
+</select>
+
+<label>Descrição</label>
+<textarea id="descricao" placeholder="Explique o problema"></textarea>
+
+<label>Foto do problema</label>
+<input type="file" id="foto" accept="image/*">
+
+<button onclick="pegarLocalizacao()">📍 Capturar localização</button>
+
+<p id="localizacao"></p>
+
+<button onclick="enviarProblema()">Enviar Problema</button>
+
+</div>
+
+<div class="card">
+
+<h2>Problemas registrados</h2>
+
+<div id="lista"></div>
+
+</div>
+
+</div>
+
+<footer>
+Projeto cidadão • Januária Conecta
+</footer>
+
+<script>
+
+let latitude=null
+let longitude=null
+
+function pegarLocalizacao(){
+
+navigator.geolocation.getCurrentPosition(function(pos){
+
+latitude=pos.coords.latitude
+longitude=pos.coords.longitude
+
+document.getElementById("localizacao").innerHTML=
+"Localização capturada: "+latitude.toFixed(4)+", "+longitude.toFixed(4)
+
+})
+
+}
+
+function enviarProblema(){
+
+let tipo=document.getElementById("tipo").value
+let descricao=document.getElementById("descricao").value
+let foto=document.getElementById("foto").files[0]
+
+if(!latitude){
+alert("Capture a localização primeiro")
+return
+}
+
+let leitor=new FileReader()
+
+leitor.onload=function(){
+
+let imagem=leitor.result
+
+let problema={
+tipo:tipo,
+descricao:descricao,
+imagem:imagem,
+lat:latitude,
+lon:longitude,
+status:"Recebido"
+}
+
+let lista=JSON.parse(localStorage.getItem("problemas"))||[]
+
+lista.push(problema)
+
+localStorage.setItem("problemas",JSON.stringify(lista))
+
+mostrarProblemas()
+
+}
+
+if(foto){
+leitor.readAsDataURL(foto)
+}else{
+alert("Adicione uma foto")
+}
+
+}
+
+function mostrarProblemas(){
+
+let lista=JSON.parse(localStorage.getItem("problemas"))||[]
+
+let area=document.getElementById("lista")
+
+area.innerHTML=""
+
+lista.forEach(p=>{
+
+area.innerHTML+=`
+
+<div class="problema">
+
+<h3>${p.tipo}</h3>
+
+<p>${p.descricao}</p>
+
+<p class="status">Status: ${p.status}</p>
+
+<p>Localização: ${p.lat.toFixed(4)}, ${p.lon.toFixed(4)}</p>
+
+<img src="${p.imagem}">
+
+</div>
+
+`
+
+})
+
+}
+
+mostrarProblemas()
+
+</script>
+
+</body>
+  </html>
