@@ -56,10 +56,19 @@ padding:12px;
 border-radius:6px;
 cursor:pointer;
 font-size:16px;
+margin-top:5px;
 }
 
 button:hover{
 background:#1b5dc9;
+}
+
+.limpar{
+background:#dc3545;
+}
+
+.limpar:hover{
+background:#b52a37;
 }
 
 .problema{
@@ -124,6 +133,8 @@ margin-top:30px;
 <p id="localizacao"></p>
 
 <button onclick="enviarProblema()">Enviar Problema</button>
+
+<button class="limpar" onclick="limparFormulario()">🧹 Limpar formulário</button>
 
 </div>
 
@@ -194,6 +205,8 @@ localStorage.setItem("problemas",JSON.stringify(lista))
 
 mostrarProblemas()
 
+limparFormulario()
+
 }
 
 if(foto){
@@ -201,6 +214,18 @@ leitor.readAsDataURL(foto)
 }else{
 alert("Adicione uma foto")
 }
+
+}
+
+function limparFormulario(){
+
+document.getElementById("tipo").selectedIndex = 0
+document.getElementById("descricao").value = ""
+document.getElementById("foto").value = ""
+document.getElementById("localizacao").innerHTML = ""
+
+latitude = null
+longitude = null
 
 }
 
