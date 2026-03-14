@@ -71,6 +71,15 @@ background:#dc3545;
 background:#b52a37;
 }
 
+.apagar{
+background:#6c757d;
+margin-bottom:15px;
+}
+
+.apagar:hover{
+background:#545b62;
+}
+
 .problema{
 border-left:6px solid #2c7be5;
 padding:10px;
@@ -145,6 +154,8 @@ margin-top:30px;
 <div class="card">
 
 <h2>Problemas registrados</h2>
+
+<button class="apagar" onclick="apagarProblemas()">🗑️ Apagar todos os registros</button>
 
 <div id="lista"></div>
 
@@ -230,6 +241,18 @@ document.getElementById("localizacao").innerHTML=""
 
 latitude=null
 longitude=null
+
+}
+
+function apagarProblemas(){
+
+if(confirm("Tem certeza que deseja apagar todos os registros?")){
+
+localStorage.removeItem("problemas")
+
+mostrarProblemas()
+
+}
 
 }
 
